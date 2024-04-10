@@ -19,9 +19,17 @@ public class Size {
 
     @NotNull(message = "Длина модели техники должна присутствовать")
     @Positive(message = "Длина модели техники должна быть больше 0")
-    @Column(name = "price")
+    @Column(name = "length")
     private Double length;
+
+    @NotNull(message = "Ширина модели техники должна присутствовать")
+    @Positive(message = "Ширина модели техники должна быть больше 0")
+    @Column(name = "width")
     private Double width;
+
+    @NotNull(message = "Высота модели техники должна присутствовать")
+    @Positive(message = "Высота модели техники должна быть больше 0")
+    @Column(name = "height")
     private Double height;
 
     public Size() {}
