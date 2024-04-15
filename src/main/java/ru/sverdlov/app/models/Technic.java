@@ -11,6 +11,7 @@ import ru.sverdlov.app.models.smartphone.Smartphone;
 import ru.sverdlov.app.models.television.Television;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Technic")
@@ -60,6 +61,13 @@ public class Technic {
 
     public Technic(){}
 
+    public Technic(int id, String name, String countryOfOrigin, String manufacturer) {
+        this.id = id;
+        this.name = name;
+        this.countryOfOrigin = countryOfOrigin;
+        this.manufacturer = manufacturer;
+    }
+
     public int getId() {
         return id;
     }
@@ -108,4 +116,40 @@ public class Technic {
         isPossibleMakeInstallments = possibleMakeInstallments;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Technic technic = (Technic) o;
+
+        if (id != technic.id) return false;
+        if (!name.equals(technic.name)) return false;
+        if (!countryOfOrigin.equals(technic.countryOfOrigin)) return false;
+        if (!manufacturer.equals(technic.manufacturer)) return false;
+        if (!isPossibleOrderOnline.equals(technic.isPossibleOrderOnline)) return false;
+        if (!isPossibleMakeInstallments.equals(technic.isPossibleMakeInstallments)) return false;
+        if (!Objects.equals(computers, technic.computers)) return false;
+        if (!Objects.equals(refrigerators, technic.refrigerators))
+            return false;
+        if (!Objects.equals(smartphones, technic.smartphones)) return false;
+        if (!Objects.equals(televisions, technic.televisions)) return false;
+        return Objects.equals(vacuumCleaners, technic.vacuumCleaners);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + countryOfOrigin.hashCode();
+        result = 31 * result + manufacturer.hashCode();
+        result = 31 * result + isPossibleOrderOnline.hashCode();
+        result = 31 * result + isPossibleMakeInstallments.hashCode();
+        result = 31 * result + (computers != null ? computers.hashCode() : 0);
+        result = 31 * result + (refrigerators != null ? refrigerators.hashCode() : 0);
+        result = 31 * result + (smartphones != null ? smartphones.hashCode() : 0);
+        result = 31 * result + (televisions != null ? televisions.hashCode() : 0);
+        result = 31 * result + (vacuumCleaners != null ? vacuumCleaners.hashCode() : 0);
+        return result;
+    }
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class TechnicDTO {
+public class TechnicDTO implements BaseDTO {
     @NotEmpty(message = "Имя не должно быть пустым")
     @Size(min = 3, max = 100, message = "Название техники должно быть в пределах от 3 до 100 символов")
     private String name;
@@ -25,6 +25,15 @@ public class TechnicDTO {
     private Boolean isPossibleMakeInstallments;
 
     public TechnicDTO() {}
+
+    public TechnicDTO(String name, String countryOfOrigin, String manufacturer, Boolean isPossibleOrderOnline,
+                      Boolean isPossibleMakeInstallments) {
+        this.name = name;
+        this.countryOfOrigin = countryOfOrigin;
+        this.manufacturer = manufacturer;
+        this.isPossibleOrderOnline = isPossibleOrderOnline;
+        this.isPossibleMakeInstallments = isPossibleMakeInstallments;
+    }
 
     public String getName() {
         return name;

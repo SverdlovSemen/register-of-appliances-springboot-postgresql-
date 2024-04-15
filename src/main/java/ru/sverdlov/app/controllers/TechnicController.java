@@ -78,6 +78,8 @@ public class TechnicController {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+
+
     private TechnicDTO convertToTechnicDTO(Technic technic){
         return modelMapper.map(technic, TechnicDTO.class);
     }
