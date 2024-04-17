@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class TechnicDTO implements BaseDTO {
+public class TechnicDTO {
     @NotEmpty(message = "Имя не должно быть пустым")
     @Size(min = 3, max = 100, message = "Название техники должно быть в пределах от 3 до 100 символов")
     private String name;

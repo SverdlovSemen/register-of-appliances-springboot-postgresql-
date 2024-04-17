@@ -10,43 +10,46 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Technic;
+import ru.sverdlov.app.models.util.EntityErrorResponse;
+import ru.sverdlov.app.models.util.EntityNotCreatedException;
+import ru.sverdlov.app.models.util.EntityNotFoundException;
+import ru.sverdlov.app.models.util.EntityValidator;
 import ru.sverdlov.app.services.TechnicService;
-import ru.sverdlov.app.models.util.utilTechnic.TechnicErrorResponse;
-import ru.sverdlov.app.models.util.utilTechnic.TechnicNotCreatedException;
-import ru.sverdlov.app.models.util.utilTechnic.TechnicNotFoundException;
-import ru.sverdlov.app.models.util.utilTechnic.TechnicValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/technics")
-public class TechnicController {
+public class TechnicController implements BaseController<Technic, TechnicDTO> {
     private final TechnicService technicService;
     private final ModelMapper modelMapper;
-    private final TechnicValidator technicValidator;
+    private final EntityValidator entityValidator;
 
     @Autowired
-    public TechnicController(TechnicService technicService, ModelMapper modelMapper, TechnicValidator technicValidator) {
+    public TechnicController(TechnicService technicService, ModelMapper modelMapper, EntityValidator entityValidator) {
         this.technicService = technicService;
         this.modelMapper = modelMapper;
-        this.technicValidator = technicValidator;
+        this.entityValidator = entityValidator;
     }
 
     @GetMapping()
-    public List<TechnicDTO> getTechnics(){
-        return technicService.findAll().stream().map(this::convertToTechnicDTO).collect(Collectors.toList());
+    @Override
+    public List<TechnicDTO> getAll() {
+        return technicService.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public TechnicDTO getTechnic(@PathVariable("id") int id){
-        return convertToTechnicDTO(technicService.findOne(id));
+    @Override
+    public TechnicDTO getById(@PathVariable("id") int id) {
+        return convertToDTO(technicService.findOne(id));
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<HttpStatus> create(@RequestBody @Valid TechnicDTO technicDTO, BindingResult bindingResult){
-        Technic technic = convertToTechnic(technicDTO);
-        technicValidator.validate(technic, bindingResult);
+    @Override
+    public ResponseEntity<HttpStatus> create(@RequestBody @Valid TechnicDTO technicDTO, BindingResult bindingResult) {
+        Technic technic = convertToEntity(technicDTO);
+        entityValidator.validate(technic, bindingResult);
 
         if(bindingResult.hasErrors()){
             StringBuilder errorMsg = new StringBuilder();
@@ -56,7 +59,7 @@ public class TechnicController {
                 errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
             }
 
-            throw new TechnicNotCreatedException(errorMsg.toString());
+            throw new EntityNotCreatedException(errorMsg.toString());
         }
 
         technicService.save(technic);
@@ -65,24 +68,28 @@ public class TechnicController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<TechnicErrorResponse> handleException(TechnicNotFoundException e){
-        TechnicErrorResponse response = new TechnicErrorResponse("Техника с таким id не была найдена", System.currentTimeMillis());
+    @Override
+    public ResponseEntity<EntityErrorResponse> handleException(EntityNotFoundException e) {
+        EntityErrorResponse response = new EntityErrorResponse("Техника с таким id не была найдена", System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    private ResponseEntity<TechnicErrorResponse> handleException(TechnicNotCreatedException e){
-        TechnicErrorResponse response = new TechnicErrorResponse(e.getMessage(), System.currentTimeMillis());
+    @Override
+    public ResponseEntity<EntityErrorResponse> handleException(EntityNotCreatedException e) {
+        EntityErrorResponse response = new EntityErrorResponse(e.getMessage(), System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
-
-    private TechnicDTO convertToTechnicDTO(Technic technic){
+    @Override
+    public TechnicDTO convertToDTO(Technic technic) {
         return modelMapper.map(technic, TechnicDTO.class);
     }
 
-    private Technic convertToTechnic(TechnicDTO technicDTO){return modelMapper.map(technicDTO, Technic.class);}
+    @Override
+    public Technic convertToEntity(TechnicDTO technicDTO) {
+        return modelMapper.map(technicDTO, Technic.class);
+    }
 }

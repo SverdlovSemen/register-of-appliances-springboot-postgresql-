@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.sverdlov.app.models.Technic;
-import ru.sverdlov.app.models.util.utilTechnic.TechnicNotFoundException;
+import ru.sverdlov.app.models.util.EntityNotFoundException;
 import ru.sverdlov.app.repositories.TechnicRepository;
 
 import java.util.List;
@@ -54,7 +54,7 @@ class TechnicServiceTest {
         int notExistingId = 99;
         Mockito.when(technicRepository.findById(notExistingId)).thenReturn(Optional.empty());
 
-        assertThrows(TechnicNotFoundException.class, () -> technicService.findOne(notExistingId));
+        assertThrows(EntityNotFoundException.class, () -> technicService.findOne(notExistingId));
     }
 
     @Test

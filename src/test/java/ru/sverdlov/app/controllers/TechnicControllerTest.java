@@ -13,13 +13,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Technic;
-import ru.sverdlov.app.models.util.utilTechnic.TechnicValidator;
+import ru.sverdlov.app.models.util.EntityValidator;
 import ru.sverdlov.app.services.TechnicService;
 
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -36,7 +35,7 @@ class TechnicControllerTest {
     private ModelMapper modelMapper;
 
     @Mock
-    private TechnicValidator technicValidator;
+    private EntityValidator entityValidator;
 
     @InjectMocks
     private TechnicController technicController;
@@ -57,7 +56,7 @@ class TechnicControllerTest {
     }
 
     @Test
-    void getTechnics() throws Exception {
+    void getAll() throws Exception {
         when(technicService.findAll()).thenReturn(List.of(technic1, technic2));
 
         when(modelMapper.map(technic1, TechnicDTO.class)).thenReturn(new TechnicDTO("Headphones",
@@ -70,15 +69,20 @@ class TechnicControllerTest {
                 .andExpect(jsonPath("$[0].name").value("Headphones"))
                 .andExpect(jsonPath("$[0].countryOfOrigin").value("Britain"))
                 .andExpect(jsonPath("$[0].manufacturer").value("Marshall"))
+                .andExpect(jsonPath("$[0].isPossibleOrderOnline").value(true))
+                .andExpect(jsonPath("$[0].isPossibleMakeInstallments").value(true))
+
                 .andExpect(jsonPath("$[1].name").value("Keyboard"))
                 .andExpect(jsonPath("$[1].countryOfOrigin").value("Switzerland"))
-                .andExpect(jsonPath("$[1].manufacturer").value("Logitech"));
+                .andExpect(jsonPath("$[1].manufacturer").value("Logitech"))
+                .andExpect(jsonPath("$[1].isPossibleOrderOnline").value(true))
+                .andExpect(jsonPath("$[1].isPossibleMakeInstallments").value(false));
 
         verify(technicService, times(1)).findAll();
     }
 
     @Test
-    void getTechnic() throws Exception {
+    void getById() throws Exception {
         when(technicService.findOne(8)).thenReturn(technic1);
 
         when(modelMapper.map(technic1, TechnicDTO.class)).thenReturn(new TechnicDTO("Headphones",
@@ -106,11 +110,12 @@ class TechnicControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(technicJson))
                 .andExpect(status().isOk());
+
         verify(technicService, times(1)).save(any());
     }
 
     @Test
-    void create_invalidTechnicDTO_throwsTechnicNotCreatedException() throws Exception{
+    void create_invalidTechnicDTO_throwsEntityNotCreatedException() throws Exception {
         TechnicDTO invalidTechnicDTO = new TechnicDTO("", "", "", null, null);
 
         String technicJson = objectMapper.writeValueAsString(invalidTechnicDTO);
@@ -119,6 +124,7 @@ class TechnicControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(technicJson))
                 .andExpect(status().isBadRequest());
+
         verify(technicService, times(0)).save(any());
     }
 }

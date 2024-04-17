@@ -3,8 +3,8 @@ package ru.sverdlov.app.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sverdlov.app.models.Model;
+import ru.sverdlov.app.models.util.EntityNotFoundException;
 import ru.sverdlov.app.repositories.ModelRepository;
-import ru.sverdlov.app.models.util.utilModel.ModelNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class ModelService {
 
     public Model findOne(int id){
         Optional<Model> model = modelRepository.findById(id);
-        return model.orElseThrow(ModelNotFoundException::new);
+        return model.orElseThrow(EntityNotFoundException::new);
     }
 
     public Optional<Model> findOne(Model foundModel){

@@ -1,11 +1,10 @@
-package ru.sverdlov.app.models.util.utilTechnic;
+package ru.sverdlov.app.models.util;
 
-
-public class TechnicErrorResponse {
+public class EntityErrorResponse {
     private String message;
     private long timestamp;
 
-    public TechnicErrorResponse(String message, long timestamp) {
+    public EntityErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

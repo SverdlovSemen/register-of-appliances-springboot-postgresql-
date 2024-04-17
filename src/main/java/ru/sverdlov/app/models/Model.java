@@ -8,7 +8,7 @@ import ru.sverdlov.app.models.util.Size;
 
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity(name = "Model")
-abstract public class Model {
+public class Model {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

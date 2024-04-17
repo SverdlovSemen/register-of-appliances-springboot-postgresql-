@@ -4,19 +4,20 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.sverdlov.app.dto.ModelDTO;
-import ru.sverdlov.app.models.util.ErrorResponse;
-import ru.sverdlov.app.models.util.utilModel.ModelErrorResponse;
-import ru.sverdlov.app.models.util.utilModel.ModelNotCreatedException;
-import ru.sverdlov.app.models.util.utilModel.ModelNotFoundException;
+import ru.sverdlov.app.models.util.EntityErrorResponse;
+import ru.sverdlov.app.models.util.EntityNotCreatedException;
+import ru.sverdlov.app.models.util.EntityNotFoundException;
 
 import java.util.List;
 
-public interface BaseController<T> {
-    List<T> getAll();
-    T getById(int id);
-    ResponseEntity<HttpStatus> create(@RequestBody @Valid ModelDTO baseDTO, BindingResult bindingResult);
-    ResponseEntity<ModelErrorResponse> handleException(ModelNotFoundException e);
-    ResponseEntity<ModelErrorResponse> handleException(ModelNotCreatedException e);
+public interface BaseController<Entity, DTO> {
+    List<DTO> getAll();
+    DTO getById(@PathVariable("id") int id);
+    ResponseEntity<HttpStatus> create(@RequestBody @Valid DTO dto, BindingResult bindingResult);
+    ResponseEntity<EntityErrorResponse> handleException(EntityNotFoundException e);
+    ResponseEntity<EntityErrorResponse> handleException(EntityNotCreatedException e);
+    DTO convertToDTO(Entity entity);
+    Entity convertToEntity(DTO dto);
 }
