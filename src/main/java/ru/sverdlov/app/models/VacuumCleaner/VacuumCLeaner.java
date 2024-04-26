@@ -7,7 +7,15 @@ import ru.sverdlov.app.models.Model;
 
 @Entity
 @Table(name = "VacuumCleaner")
-public class VacuumCLeaner extends Model {
+public class VacuumCLeaner {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "model_id", referencedColumnName = "id")
+    private Model model;
 
     @NotNull(message = "Объём пылесборника в пылесосе должен быть указан")
     @Positive(message = "Объём пылесборника в пылесосе должен быть больше 0")

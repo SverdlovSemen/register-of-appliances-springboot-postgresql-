@@ -7,7 +7,15 @@ import ru.sverdlov.app.models.Model;
 
 @Entity
 @Table(name = "Smartphone")
-public class Smartphone extends Model {
+public class Smartphone {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "model_id", referencedColumnName = "id")
+    private Model model;
 
     @NotNull(message = "Память в телефоне должна быть указана")
     @Positive(message = "Память в телефоне должна быть больше 0")

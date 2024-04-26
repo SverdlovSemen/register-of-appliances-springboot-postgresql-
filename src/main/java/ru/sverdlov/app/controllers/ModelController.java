@@ -7,9 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.sverdlov.app.dto.ModelDTO;
+import ru.sverdlov.app.dto.SizeDTO;
+import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Model;
+import ru.sverdlov.app.models.Technic;
 import ru.sverdlov.app.models.util.EntityErrorResponse;
 import ru.sverdlov.app.models.util.EntityNotCreatedException;
 import ru.sverdlov.app.models.util.EntityNotFoundException;
@@ -53,17 +57,17 @@ public class ModelController implements BaseController<Model, ModelDTO> {
         if(bindingResult.hasErrors()){
             StringBuilder errorMsg = new StringBuilder();
 
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for(FieldError error : errors){
-                errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
+            List<ObjectError> errors = bindingResult.getAllErrors();
+            for(ObjectError error : errors){
+                errorMsg.append(error.getDefaultMessage()).append(";");
             }
 
             throw new EntityNotCreatedException(errorMsg.toString());
         }
 
         modelService.save(model);
-
         return ResponseEntity.ok(HttpStatus.OK);
+
     }
 
     @ExceptionHandler
@@ -77,14 +81,20 @@ public class ModelController implements BaseController<Model, ModelDTO> {
     @ExceptionHandler
     @Override
     public ResponseEntity<EntityErrorResponse> handleException(EntityNotCreatedException e){
-        EntityErrorResponse response = new EntityErrorResponse(e.getMessage(), System.currentTimeMillis());
+        EntityErrorResponse response = new EntityErrorResponse("Модель техники не была создана. " + e.getMessage(), System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @Override
     public ModelDTO convertToDTO(Model model) {
-        return modelMapper.map(model, ModelDTO.class);
+        ModelDTO modelDTO = modelMapper.map(model, ModelDTO.class);
+        if(model.getTechnic() != null)
+            modelDTO.setTechnicDTO(modelMapper.map(model.getTechnic(), TechnicDTO.class));
+        if(model.getSize() != null)
+            modelDTO.setSizeDTO(modelMapper.map(model.getSize(), SizeDTO.class));
+
+        return modelDTO;
     }
 
     @Override

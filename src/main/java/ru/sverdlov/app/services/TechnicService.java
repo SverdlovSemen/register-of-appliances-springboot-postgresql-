@@ -28,16 +28,23 @@ public class TechnicService {
     }
 
     public Optional<Technic> findOne(Technic technic){
-        return technicRepository.findByNameAndCountryOfOriginAndManufacturerAndIsPossibleOrderOnlineAndIsPossibleMakeInstallments(
+        return technicRepository.findByNameAndCountryOriginAndManufacturerAndPossibleOrderOnlineAndPossibleMakeInstallments(
                 technic.getName(),
-                technic.getCountryOfOrigin(),
+                technic.getCountryOrigin(),
                 technic.getManufacturer(),
                 technic.getPossibleOrderOnline(),
                 technic.getPossibleMakeInstallments());
     }
 
     public void save(Technic technic){
-        technicRepository.save(technic);
+        if(technic != null){
+            Optional<Technic> technicFromDatabase = findOne(technic);
+            if(technicFromDatabase.isPresent()){
+                technic.setId(technicFromDatabase.get().getId());
+            } else {
+                technicRepository.save(technic);
+            }
+        }
     }
 }
 

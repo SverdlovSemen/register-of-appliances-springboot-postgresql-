@@ -9,7 +9,18 @@ import ru.sverdlov.app.models.Model;
 
 @Entity
 @Table(name = "Refrigerator")
-public class Refrigerator extends Model {
+public class Refrigerator {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "model_id", referencedColumnName = "id")
+    @NotNull(message = "У холодильника должна быть модель")
+    private Model model;
+
     @NotNull(message = "Количество дверей в холодильнике должно быть указано")
     @Positive(message = "Количество дверей в холодильнике должно быть больше 0")
     @Column(name = "number_doors")

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Technic;
@@ -54,9 +55,9 @@ public class TechnicController implements BaseController<Technic, TechnicDTO> {
         if(bindingResult.hasErrors()){
             StringBuilder errorMsg = new StringBuilder();
 
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for(FieldError error : errors){
-                errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
+            List<ObjectError> errors = bindingResult.getAllErrors();
+            for(ObjectError error : errors){
+                errorMsg.append(error.getDefaultMessage()).append(";");
             }
 
             throw new EntityNotCreatedException(errorMsg.toString());
@@ -78,7 +79,7 @@ public class TechnicController implements BaseController<Technic, TechnicDTO> {
     @ExceptionHandler
     @Override
     public ResponseEntity<EntityErrorResponse> handleException(EntityNotCreatedException e) {
-        EntityErrorResponse response = new EntityErrorResponse(e.getMessage(), System.currentTimeMillis());
+        EntityErrorResponse response = new EntityErrorResponse("Техника не была создана. " + e.getMessage(), System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

@@ -7,7 +7,15 @@ import ru.sverdlov.app.models.Model;
 
 @Entity
 @Table(name = "Television")
-public class Television extends Model {
+public class Television {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "model_id", referencedColumnName = "id")
+    private Model model;
 
     @NotEmpty(message = "Категория у телевизора не должна быть пустой")
     @Size(min = 3, max = 100, message = "Категория у телевизора должна быть в пределах от 3 до 100 символов")

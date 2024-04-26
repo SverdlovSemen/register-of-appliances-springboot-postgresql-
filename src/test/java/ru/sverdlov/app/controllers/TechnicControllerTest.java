@@ -67,16 +67,16 @@ class TechnicControllerTest {
         mockMvc.perform(get("/technics"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Headphones"))
-                .andExpect(jsonPath("$[0].countryOfOrigin").value("Britain"))
+                .andExpect(jsonPath("$[0].countryOrigin").value("Britain"))
                 .andExpect(jsonPath("$[0].manufacturer").value("Marshall"))
-                .andExpect(jsonPath("$[0].isPossibleOrderOnline").value(true))
-                .andExpect(jsonPath("$[0].isPossibleMakeInstallments").value(true))
+                .andExpect(jsonPath("$[0].possibleOrderOnline").value(true))
+                .andExpect(jsonPath("$[0].possibleMakeInstallments").value(true))
 
                 .andExpect(jsonPath("$[1].name").value("Keyboard"))
-                .andExpect(jsonPath("$[1].countryOfOrigin").value("Switzerland"))
+                .andExpect(jsonPath("$[1].countryOrigin").value("Switzerland"))
                 .andExpect(jsonPath("$[1].manufacturer").value("Logitech"))
-                .andExpect(jsonPath("$[1].isPossibleOrderOnline").value(true))
-                .andExpect(jsonPath("$[1].isPossibleMakeInstallments").value(false));
+                .andExpect(jsonPath("$[1].possibleOrderOnline").value(true))
+                .andExpect(jsonPath("$[1].possibleMakeInstallments").value(false));
 
         verify(technicService, times(1)).findAll();
     }
@@ -91,7 +91,7 @@ class TechnicControllerTest {
         mockMvc.perform(get("/technics/{id}", 8))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Headphones"))
-                .andExpect(jsonPath("$.countryOfOrigin").value("Britain"))
+                .andExpect(jsonPath("$.countryOrigin").value("Britain"))
                 .andExpect(jsonPath("$.manufacturer").value("Marshall"));
 
         verify(technicService, times(1)).findOne(8);

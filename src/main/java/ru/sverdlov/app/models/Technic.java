@@ -1,7 +1,7 @@
 package ru.sverdlov.app.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import ru.sverdlov.app.models.VacuumCleaner.VacuumCLeaner;
@@ -21,50 +21,38 @@ public class Technic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotEmpty(message = "Имя не должно быть пустым")
+    @NotBlank(message = "Имя не должно быть пустым")
     @Size(min = 3, max = 100, message = "Название техники должно быть в пределах от 3 до 100 символов")
     @Column(name = "name")
     private String name;
 
-    @NotEmpty(message = "Страна производитель не должна быть пустой")
+    @NotBlank(message = "Страна производитель не должна быть пустой")
     @Size(min = 3, max = 100, message = "Страна производитель должна быть от 3 до 100 символов")
     @Column(name="country_origin")
-    private String countryOfOrigin;
+    private String countryOrigin;
 
-    @NotEmpty(message = "Фирма производитель не должна быть пустой")
+    @NotBlank(message = "Фирма производитель не должна быть пустой")
     @Size(min = 3, max = 100, message = "Страна производитель должна быть от 3 до 100 символов")
     @Column(name="manufacturer")
     private String manufacturer;
 
     @NotNull(message = "Возможность заказа онлайн должна быть указана")
-    @Column(name = "is_possible_order_online")
-    private Boolean isPossibleOrderOnline;
+    @Column(name = "possible_order_online")
+    private Boolean possibleOrderOnline;
 
     @NotNull(message = "Фирма производитель должна быть указана")
-    @Column(name = "is_possible_make_installments")
-    private Boolean isPossibleMakeInstallments;
+    @Column(name = "possible_make_installments")
+    private Boolean possibleMakeInstallments;
 
     @OneToMany(mappedBy = "technic")
-    private List<Computer> computers;
-
-    @OneToMany(mappedBy = "technic")
-    private List<Refrigerator> refrigerators;
-
-    @OneToMany(mappedBy = "technic")
-    private List<Smartphone> smartphones;
-
-    @OneToMany(mappedBy = "technic")
-    private List<Television> televisions;
-
-    @OneToMany(mappedBy = "technic")
-    private List<VacuumCLeaner> vacuumCleaners;
+    private List<Model> models;
 
     public Technic(){}
 
-    public Technic(int id, String name, String countryOfOrigin, String manufacturer) {
+    public Technic(int id, String name, String countryOrigin, String manufacturer) {
         this.id = id;
         this.name = name;
-        this.countryOfOrigin = countryOfOrigin;
+        this.countryOrigin = countryOrigin;
         this.manufacturer = manufacturer;
     }
 
@@ -84,12 +72,12 @@ public class Technic {
         this.name = name;
     }
 
-    public String getCountryOfOrigin() {
-        return countryOfOrigin;
+    public String getCountryOrigin() {
+        return countryOrigin;
     }
 
-    public void setCountryOfOrigin(String countryOfOrigin) {
-        this.countryOfOrigin = countryOfOrigin;
+    public void setCountryOrigin(String countryOrigin) {
+        this.countryOrigin = countryOrigin;
     }
 
     public String getManufacturer() {
@@ -101,19 +89,19 @@ public class Technic {
     }
 
     public Boolean getPossibleOrderOnline() {
-        return isPossibleOrderOnline;
+        return possibleOrderOnline;
     }
 
     public void setPossibleOrderOnline(Boolean possibleOrderOnline) {
-        isPossibleOrderOnline = possibleOrderOnline;
+        this.possibleOrderOnline = possibleOrderOnline;
     }
 
     public Boolean getPossibleMakeInstallments() {
-        return isPossibleMakeInstallments;
+        return possibleMakeInstallments;
     }
 
     public void setPossibleMakeInstallments(Boolean possibleMakeInstallments) {
-        isPossibleMakeInstallments = possibleMakeInstallments;
+        this.possibleMakeInstallments = possibleMakeInstallments;
     }
 
     @Override
@@ -125,31 +113,20 @@ public class Technic {
 
         if (id != technic.id) return false;
         if (!name.equals(technic.name)) return false;
-        if (!countryOfOrigin.equals(technic.countryOfOrigin)) return false;
+        if (!countryOrigin.equals(technic.countryOrigin)) return false;
         if (!manufacturer.equals(technic.manufacturer)) return false;
-        if (!isPossibleOrderOnline.equals(technic.isPossibleOrderOnline)) return false;
-        if (!isPossibleMakeInstallments.equals(technic.isPossibleMakeInstallments)) return false;
-        if (!Objects.equals(computers, technic.computers)) return false;
-        if (!Objects.equals(refrigerators, technic.refrigerators))
-            return false;
-        if (!Objects.equals(smartphones, technic.smartphones)) return false;
-        if (!Objects.equals(televisions, technic.televisions)) return false;
-        return Objects.equals(vacuumCleaners, technic.vacuumCleaners);
+        if (!possibleOrderOnline.equals(technic.possibleOrderOnline)) return false;
+        return possibleMakeInstallments.equals(technic.possibleMakeInstallments);
     }
 
     @Override
     public int hashCode() {
         int result = id;
         result = 31 * result + name.hashCode();
-        result = 31 * result + countryOfOrigin.hashCode();
+        result = 31 * result + countryOrigin.hashCode();
         result = 31 * result + manufacturer.hashCode();
-        result = 31 * result + isPossibleOrderOnline.hashCode();
-        result = 31 * result + isPossibleMakeInstallments.hashCode();
-        result = 31 * result + (computers != null ? computers.hashCode() : 0);
-        result = 31 * result + (refrigerators != null ? refrigerators.hashCode() : 0);
-        result = 31 * result + (smartphones != null ? smartphones.hashCode() : 0);
-        result = 31 * result + (televisions != null ? televisions.hashCode() : 0);
-        result = 31 * result + (vacuumCleaners != null ? vacuumCleaners.hashCode() : 0);
+        result = 31 * result + possibleOrderOnline.hashCode();
+        result = 31 * result + possibleMakeInstallments.hashCode();
         return result;
     }
 }
