@@ -1,40 +1,31 @@
-package ru.sverdlov.app.models.computer;
+package ru.sverdlov.app.dto;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import ru.sverdlov.app.models.Model;
+import ru.sverdlov.app.models.computer.Category;
+import ru.sverdlov.app.models.computer.ProcessorType;
 
-@Entity
-@Table(name = "Computer")
-public class Computer {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+public class ComputerDTO {
     @NotNull(message = "У компьютера должна быть модель")
-    @ManyToOne
-    @JoinColumn(name = "model_id", referencedColumnName = "id")
-    private Model model;
+    @Valid
+    private ModelDTO modelDTO;
 
     @NotNull(message = "Категория не должна быть пустой")
     @Enumerated(EnumType.STRING)
-    @Column(name = "category")
     private Category category;
 
     @NotNull(message = "Тип процессора не должен быть пустым")
     @Enumerated(EnumType.STRING)
-    @Column(name = "processor_type")
     private ProcessorType processorType;
 
-    public Computer(){}
-
-    public Model getModel() {
-        return model;
+    public ModelDTO getModelDTO() {
+        return modelDTO;
     }
 
-    public void setModel(Model model) {
-        this.model = model;
+    public void setModelDTO(ModelDTO modelDTO) {
+        this.modelDTO = modelDTO;
     }
 
     public Category getCategory() {

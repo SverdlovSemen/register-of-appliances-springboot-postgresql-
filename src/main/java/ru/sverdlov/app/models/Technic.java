@@ -4,14 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import ru.sverdlov.app.models.VacuumCleaner.VacuumCLeaner;
-import ru.sverdlov.app.models.computer.Computer;
-import ru.sverdlov.app.models.refrigerator.Refrigerator;
-import ru.sverdlov.app.models.smartphone.Smartphone;
-import ru.sverdlov.app.models.television.Television;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "Technic")

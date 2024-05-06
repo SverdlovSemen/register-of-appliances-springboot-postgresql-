@@ -1,4 +1,4 @@
-package ru.sverdlov.app.models.util;
+package ru.sverdlov.app.models.util.error;
 
 public class EntityNotFoundException extends RuntimeException {
 }

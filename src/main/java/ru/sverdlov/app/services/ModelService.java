@@ -1,26 +1,19 @@
 package ru.sverdlov.app.services;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.sverdlov.app.dto.ComputerDTO;
-import ru.sverdlov.app.dto.ModelDTO;
-import ru.sverdlov.app.dto.RefrigeratorDTO;
 import ru.sverdlov.app.models.Model;
 import ru.sverdlov.app.models.Technic;
-import ru.sverdlov.app.models.util.EntityNotCreatedException;
-import ru.sverdlov.app.models.util.EntityNotFoundException;
+import ru.sverdlov.app.models.util.error.EntityNotFoundException;
 import ru.sverdlov.app.models.util.Size;
 import ru.sverdlov.app.repositories.ModelRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
-public class ModelService {
+public class ModelService implements IService<Model> {
     private final ModelRepository modelRepository;
     private final TechnicService technicService;
     private final SizeService sizeService;
@@ -32,15 +25,18 @@ public class ModelService {
         this.sizeService = sizeService;
     }
 
+    @Override
     public List<Model> findAll(){
         return modelRepository.findAll();
     }
 
+    @Override
     public Model findOne(int id){
         Optional<Model> model = modelRepository.findById(id);
         return model.orElseThrow(EntityNotFoundException::new);
     }
 
+    @Override
     public Optional<Model> findOne(Model model){
         Optional<Size> sizeOptional = Optional.empty();
         Optional<Technic> technicOptional = Optional.empty();
@@ -61,6 +57,7 @@ public class ModelService {
         );
     }
 
+    @Override
     public void save(Model model){
         Optional<Model> modelFromDatabase = findOne(model);
         if(modelFromDatabase.isPresent()) {

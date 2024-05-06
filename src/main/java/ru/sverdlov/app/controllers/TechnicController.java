@@ -6,15 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Technic;
-import ru.sverdlov.app.models.util.EntityErrorResponse;
-import ru.sverdlov.app.models.util.EntityNotCreatedException;
-import ru.sverdlov.app.models.util.EntityNotFoundException;
-import ru.sverdlov.app.models.util.EntityValidator;
+import ru.sverdlov.app.models.util.error.EntityErrorResponse;
+import ru.sverdlov.app.models.util.error.EntityNotCreatedException;
+import ru.sverdlov.app.models.util.error.EntityNotFoundException;
+import ru.sverdlov.app.models.util.validator.TechnicValidator;
 import ru.sverdlov.app.services.TechnicService;
 
 import java.util.List;
@@ -25,13 +24,13 @@ import java.util.stream.Collectors;
 public class TechnicController implements BaseController<Technic, TechnicDTO> {
     private final TechnicService technicService;
     private final ModelMapper modelMapper;
-    private final EntityValidator entityValidator;
+    private final TechnicValidator technicValidator;
 
     @Autowired
-    public TechnicController(TechnicService technicService, ModelMapper modelMapper, EntityValidator entityValidator) {
+    public TechnicController(TechnicService technicService, ModelMapper modelMapper, TechnicValidator technicValidator) {
         this.technicService = technicService;
         this.modelMapper = modelMapper;
-        this.entityValidator = entityValidator;
+        this.technicValidator = technicValidator;
     }
 
     @GetMapping()
@@ -50,7 +49,7 @@ public class TechnicController implements BaseController<Technic, TechnicDTO> {
     @Override
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid TechnicDTO technicDTO, BindingResult bindingResult) {
         Technic technic = convertToEntity(technicDTO);
-        entityValidator.validate(technic, bindingResult);
+        technicValidator.validate(technic, bindingResult);
 
         if(bindingResult.hasErrors()){
             StringBuilder errorMsg = new StringBuilder();

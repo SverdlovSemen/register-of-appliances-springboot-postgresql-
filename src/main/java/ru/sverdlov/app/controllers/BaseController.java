@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.sverdlov.app.models.util.EntityErrorResponse;
-import ru.sverdlov.app.models.util.EntityNotCreatedException;
-import ru.sverdlov.app.models.util.EntityNotFoundException;
+import ru.sverdlov.app.models.util.error.EntityErrorResponse;
+import ru.sverdlov.app.models.util.error.EntityNotCreatedException;
+import ru.sverdlov.app.models.util.error.EntityNotFoundException;
 
 import java.util.List;
 

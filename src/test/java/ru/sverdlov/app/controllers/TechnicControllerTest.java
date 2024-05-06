@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Technic;
-import ru.sverdlov.app.models.util.EntityValidator;
+import ru.sverdlov.app.models.util.validator.TechnicValidator;
 import ru.sverdlov.app.services.TechnicService;
 
 import java.util.List;
@@ -35,7 +35,7 @@ class TechnicControllerTest {
     private ModelMapper modelMapper;
 
     @Mock
-    private EntityValidator entityValidator;
+    private TechnicValidator technicValidator;
 
     @InjectMocks
     private TechnicController technicController;

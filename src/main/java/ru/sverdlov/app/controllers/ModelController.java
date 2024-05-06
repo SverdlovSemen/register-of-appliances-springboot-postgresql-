@@ -6,18 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.sverdlov.app.dto.ModelDTO;
 import ru.sverdlov.app.dto.SizeDTO;
 import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Model;
-import ru.sverdlov.app.models.Technic;
-import ru.sverdlov.app.models.util.EntityErrorResponse;
-import ru.sverdlov.app.models.util.EntityNotCreatedException;
-import ru.sverdlov.app.models.util.EntityNotFoundException;
-import ru.sverdlov.app.models.util.EntityValidator;
+import ru.sverdlov.app.models.util.error.EntityErrorResponse;
+import ru.sverdlov.app.models.util.error.EntityNotCreatedException;
+import ru.sverdlov.app.models.util.error.EntityNotFoundException;
+import ru.sverdlov.app.models.util.validator.ModelValidator;
 import ru.sverdlov.app.services.ModelService;
 
 import java.util.List;
@@ -28,13 +26,13 @@ import java.util.stream.Collectors;
 public class ModelController implements BaseController<Model, ModelDTO> {
     private final ModelService modelService;
     private final ModelMapper modelMapper;
-    private final EntityValidator entityValidator;
+    private final ModelValidator modelValidator;
 
     @Autowired
-    public ModelController(ModelService modelService, ModelMapper modelMapper, EntityValidator entityValidator) {
+    public ModelController(ModelService modelService, ModelMapper modelMapper, ModelValidator modelValidator) {
         this.modelService = modelService;
         this.modelMapper = modelMapper;
-        this.entityValidator = entityValidator;
+        this.modelValidator = modelValidator;
     }
 
     @GetMapping()
@@ -52,7 +50,7 @@ public class ModelController implements BaseController<Model, ModelDTO> {
     @PostMapping("/registration")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid ModelDTO modelDTO, BindingResult bindingResult){
         Model model = convertToEntity(modelDTO);
-        entityValidator.validate(model, bindingResult);
+        modelValidator.validate(model, bindingResult);
 
         if(bindingResult.hasErrors()){
             StringBuilder errorMsg = new StringBuilder();

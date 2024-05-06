@@ -2,6 +2,7 @@ package ru.sverdlov.app.models.television;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import ru.sverdlov.app.models.Model;
 
@@ -13,21 +14,30 @@ public class Television {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull(message = "У телевизора должна быть модель")
     @ManyToOne
     @JoinColumn(name = "model_id", referencedColumnName = "id")
     private Model model;
 
-    @NotEmpty(message = "Категория у телевизора не должна быть пустой")
-    @Size(min = 3, max = 100, message = "Категория у телевизора должна быть в пределах от 3 до 100 символов")
+    @NotNull(message = "Категория у телевизора не должна быть пустой")
+    @Enumerated(EnumType.STRING)
     @Column(name = "category")
     private Category category;
 
-    @NotEmpty(message = "Технология у телевизора не должна быть пустой")
-    @Size(min = 3, max = 100, message = "Технология у телевизора должна быть в пределах от 3 до 100 символов")
+    @NotNull(message = "Технология у телевизора не должна быть пустой")
+    @Enumerated(EnumType.STRING)
     @Column(name = "technology")
     private Technology technology;
 
     public Television(){}
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
 
     public Category getCategory() {
         return category;

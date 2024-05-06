@@ -3,33 +3,26 @@ package ru.sverdlov.app.controllers;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.sverdlov.app.dto.ComputerDTO;
 import ru.sverdlov.app.dto.ModelDTO;
 import ru.sverdlov.app.dto.SizeDTO;
 import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Model;
 import ru.sverdlov.app.models.Technic;
-import ru.sverdlov.app.models.computer.Category;
 import ru.sverdlov.app.models.computer.Computer;
 import ru.sverdlov.app.models.util.*;
+import ru.sverdlov.app.models.util.error.EntityErrorResponse;
+import ru.sverdlov.app.models.util.error.EntityNotCreatedException;
+import ru.sverdlov.app.models.util.error.EntityNotFoundException;
+import ru.sverdlov.app.models.util.validator.ComputerValidator;
 import ru.sverdlov.app.services.ComputerService;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,13 +30,13 @@ import java.util.stream.Collectors;
 public class ComputerController implements BaseController<Computer, ComputerDTO> {
     private final ComputerService computerService;
     private final ModelMapper modelMapper;
-    private final EntityValidator entityValidator;
+    private final ComputerValidator computerValidator;
 
     @Autowired
-    public ComputerController(ComputerService computerService, ModelMapper modelMapper, EntityValidator entityValidator) {
+    public ComputerController(ComputerService computerService, ModelMapper modelMapper, ComputerValidator computerValidator) {
         this.computerService = computerService;
         this.modelMapper = modelMapper;
-        this.entityValidator = entityValidator;
+        this.computerValidator = computerValidator;
     }
 
     @GetMapping()
@@ -62,7 +55,7 @@ public class ComputerController implements BaseController<Computer, ComputerDTO>
     @Override
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid ComputerDTO computerDTO, BindingResult bindingResult){
         Computer computer = convertToEntity(computerDTO);
-        entityValidator.validate(computer, bindingResult);
+        computerValidator.validate(computer, bindingResult);
 
         if(bindingResult.hasErrors()){
             StringBuilder errorMsg = new StringBuilder();
