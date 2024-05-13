@@ -69,6 +69,20 @@ public class RefrigeratorController implements BaseController<Refrigerator, Refr
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public List<RefrigeratorDTO> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
+            @RequestParam(required = false) Integer minNumberOfDoors,
+            @RequestParam(required = false) Integer maxNumberOfDoors,
+            @RequestParam(required = false) String compressorType) {
+
+        return refrigeratorService.findAllByFilters(name, color, minPrice, maxPrice, minNumberOfDoors, maxNumberOfDoors,
+                        compressorType).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     @ExceptionHandler
     @Override
     public ResponseEntity<EntityErrorResponse> handleException(EntityNotFoundException e){

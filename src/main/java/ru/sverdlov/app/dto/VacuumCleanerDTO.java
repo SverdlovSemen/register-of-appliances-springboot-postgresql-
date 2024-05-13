@@ -15,7 +15,7 @@ public class VacuumCleanerDTO {
 
     @NotNull(message = "Объём пылесборника в пылесосе должен быть указан")
     @Positive(message = "Объём пылесборника в пылесосе должен быть больше 0")
-    private Double volumeOfDustCollector;
+    private Integer volumeOfDustCollector;
 
     @NotNull(message = "Количество режимов в пылесосе должно быть указано")
     @Positive(message = "Количество режимов в пылесосе должно быть больше 0")
@@ -29,11 +29,11 @@ public class VacuumCleanerDTO {
         this.modelDTO = modelDTO;
     }
 
-    public Double getVolumeOfDustCollector() {
+    public Integer getVolumeOfDustCollector() {
         return volumeOfDustCollector;
     }
 
-    public void setVolumeOfDustCollector(Double volumeOfDustCollector) {
+    public void setVolumeOfDustCollector(Integer volumeOfDustCollector) {
         this.volumeOfDustCollector = volumeOfDustCollector;
     }
 

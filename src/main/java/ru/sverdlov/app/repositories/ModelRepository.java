@@ -1,5 +1,6 @@
 package ru.sverdlov.app.repositories;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,9 @@ import java.util.Optional;
 public interface ModelRepository extends JpaRepository<Model, Integer> {
     Optional<Model> findOneByTechnicAndNameAndColorAndSizeAndPriceAndAvailable(Technic technic, String name, String color, Size size,
                                                                                Long price, Boolean available);
+    List<Model> findAll(Specification<Model> specification);
+
+    List<Model> findAllByOrderByName();
+
+    List<Model> findAllByOrderByPrice();
 }

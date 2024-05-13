@@ -72,6 +72,19 @@ public class ComputerController implements BaseController<Computer, ComputerDTO>
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public List<ComputerDTO> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String processorType) {
+
+        return computerService.findAllByFilters(name, color, minPrice, maxPrice, category, processorType).stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     @ExceptionHandler
     @Override
     public ResponseEntity<EntityErrorResponse> handleException(EntityNotFoundException e){

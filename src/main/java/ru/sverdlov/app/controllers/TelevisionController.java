@@ -72,6 +72,19 @@ public class TelevisionController implements BaseController<Television, Televisi
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public List<TelevisionDTO> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String technology) {
+
+        return televisionService.findAllByFilters(name, color, minPrice, maxPrice, category, technology)
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     @ExceptionHandler
     @Override
     public ResponseEntity<EntityErrorResponse> handleException(EntityNotFoundException e){

@@ -69,6 +69,21 @@ public class SmartphoneController implements BaseController<Smartphone, Smartpho
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public List<SmartphoneDTO> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
+            @RequestParam(required = false) Integer minMemory,
+            @RequestParam(required = false) Integer maxMemory,
+            @RequestParam(required = false) Integer minNumberOfCameras,
+            @RequestParam(required = false) Integer maxNumberOfCameras) {
+
+        return smartphoneService.findAllByFilters(name, color, minPrice, maxPrice, minMemory, maxMemory,minNumberOfCameras
+                ,maxNumberOfCameras).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     @ExceptionHandler
     @Override
     public ResponseEntity<EntityErrorResponse> handleException(EntityNotFoundException e){

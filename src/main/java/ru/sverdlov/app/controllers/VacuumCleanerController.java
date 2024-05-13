@@ -70,6 +70,21 @@ public class VacuumCleanerController implements BaseController<VacuumCleaner, Va
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public List<VacuumCleanerDTO> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
+            @RequestParam(required = false) Integer minVolumeOfDustCollector,
+            @RequestParam(required = false) Integer maxVolumeOfDustCollector,
+            @RequestParam(required = false) Integer minNumberOfModes,
+            @RequestParam(required = false) Integer maxNumberOfModes) {
+
+        return vacuumCleanerService.findAllByFilters(name, color, minPrice, maxPrice, minVolumeOfDustCollector, maxVolumeOfDustCollector,
+                minNumberOfModes, maxNumberOfModes).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     @ExceptionHandler
     @Override
     public ResponseEntity<EntityErrorResponse> handleException(EntityNotFoundException e){

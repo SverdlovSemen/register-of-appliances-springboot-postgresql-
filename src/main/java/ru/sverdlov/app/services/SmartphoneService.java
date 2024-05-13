@@ -1,6 +1,9 @@
 package ru.sverdlov.app.services;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.sverdlov.app.models.Model;
 import ru.sverdlov.app.models.smartphone.Smartphone;
@@ -51,5 +54,53 @@ public class SmartphoneService implements IService<Smartphone> {
             modelService.save(smartphone.getModel());
             smartphoneRepository.save(smartphone);
         }
+    }
+
+    public List<Smartphone> findAllByFilters(String name, String color, Long minPrice, Long maxPrice, Integer minMemory,
+                                             Integer maxMemory, Integer minNumberOfCameras, Integer maxNumberOfCameras){
+        Specification<Smartphone> spec = Specification.where(null);
+
+        if(name != null && !name.isEmpty()){
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                Join<Smartphone, Model> join = root.join("model", JoinType.INNER);
+                return criteriaBuilder.like(criteriaBuilder.lower(join.get("name")), "%" + name.toLowerCase() + "%");
+            });
+        }
+        if (color != null && !color.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                Join<Smartphone, Model> join = root.join("model", JoinType.INNER);
+                return criteriaBuilder.equal(criteriaBuilder.lower(join.get("color")), color.toLowerCase());
+            });
+        }
+        if (minPrice != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                Join<Smartphone, Model> join = root.join("model", JoinType.INNER);
+                return criteriaBuilder.greaterThanOrEqualTo(join.get("price"), minPrice);
+            });
+        }
+        if (maxPrice != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                Join<Smartphone, Model> join = root.join("model", JoinType.INNER);
+                return criteriaBuilder.lessThanOrEqualTo(join.get("price"), maxPrice);
+            });
+        }
+        if(minMemory != null){
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("memory"), minMemory));
+        }
+        if(maxMemory != null){
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThanOrEqualTo(root.get("memory"), maxMemory));
+        }
+        if(minNumberOfCameras != null){
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("numberOfCameras"), minNumberOfCameras));
+        }
+        if(maxNumberOfCameras != null){
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThanOrEqualTo(root.get("numberOfCameras"), maxMemory));
+        }
+
+        return smartphoneRepository.findAll(spec);
     }
 }

@@ -1,7 +1,13 @@
 package ru.sverdlov.app.services;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.sverdlov.app.dto.ModelDTO;
+import ru.sverdlov.app.dto.TechnicDTO;
 import ru.sverdlov.app.models.Model;
 import ru.sverdlov.app.models.Technic;
 import ru.sverdlov.app.models.util.error.EntityNotFoundException;
@@ -73,4 +79,64 @@ public class ModelService implements IService<Model> {
             modelRepository.save(model);
         }
     }
+
+    public List<Model> findAllByFilters(String name, String technicName, String color, Long minPrice, Long maxPrice){
+        Specification<Model> spec = Specification.where(null);
+
+        if(name != null && !name.isEmpty()){
+            spec = spec.and(((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%")));
+        }
+        if (technicName != null && !technicName.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                Join<Model, Technic> join = root.join("technic", JoinType.INNER); // Join таблицы Model с таблицей Technic
+                return criteriaBuilder.like(criteriaBuilder.lower(join.get("name")), "%" + technicName.toLowerCase() + "%");
+            });
+        }
+        if (color != null && !color.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(criteriaBuilder.lower(root.get("color")), color.toLowerCase()));
+        }
+        if (minPrice != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+        }
+
+        if (maxPrice != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
+        }
+
+        return modelRepository.findAll(spec);
+    }
+
+    public List<Model> findAllSortedByName(){
+        return modelRepository.findAllByOrderByName();
+    }
+
+    public List<Model> findAllSortedByPrice(){
+        return modelRepository.findAllByOrderByPrice();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

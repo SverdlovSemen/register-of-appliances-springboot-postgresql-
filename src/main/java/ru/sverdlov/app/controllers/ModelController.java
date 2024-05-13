@@ -68,6 +68,28 @@ public class ModelController implements BaseController<Model, ModelDTO> {
 
     }
 
+    @GetMapping("/search")
+    public List<ModelDTO> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String technicName,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice) {
+
+        return modelService.findAllByFilters(name, technicName, color, minPrice, maxPrice).stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/sortByName")
+    public List<ModelDTO> sortByName(){
+        return modelService.findAllSortedByName().stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping("/sortByPrice")
+    public List<ModelDTO> sortByPrice(){
+        return modelService.findAllSortedByPrice().stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     @ExceptionHandler
     @Override
     public ResponseEntity<EntityErrorResponse> handleException(EntityNotFoundException e){
